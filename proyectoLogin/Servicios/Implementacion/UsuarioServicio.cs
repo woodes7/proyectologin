@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using proyectoLogin.Models;
 using proyectoLogin.Servicios.Contrato;
-
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 
 namespace proyectoLogin.Servicios.Implementacion

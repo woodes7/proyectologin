@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using proyectoLogin.Models;
 using proyectoLogin.Servicios.Contrato;
 using proyectoLogin.Servicios.Implementacion;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,15 @@ builder.Services.AddDbContext<GestorBibliotecaPersonalContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionStr"));
 });
 
-builder.Services.AddScoped<IUsuarioServicio.UsuarioServicio>();
+builder.Services.AddScoped<IUsuarioServicio,UsuarioServicio>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = "/IniciarSesion";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+}
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,14 +36,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Inicio}/{action=IniciarSesion}/{id?}");
 
 app.Run();
